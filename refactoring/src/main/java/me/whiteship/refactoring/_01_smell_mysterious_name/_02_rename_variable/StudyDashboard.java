@@ -35,6 +35,7 @@ public class StudyDashboard {
         GHRepository repository = gitHub.getRepository("whiteship/live-study");
         GHIssue issue = repository.getIssue(30);
 
+        // comments가 타입적으로는 맞는 형태지만, 실제 데이터는 review들이고, 해당 클래스에 필드명이 reviews이기 때문에 reiviews로 변경하는 것이 좋을 수 있다.
         List<GHIssueComment> reviews = issue.getComments();
         for (GHIssueComment review : reviews) {
             // 주석처리된 방법을 사용은 권장되지 않는다고 한다. (중요하진 않다)
