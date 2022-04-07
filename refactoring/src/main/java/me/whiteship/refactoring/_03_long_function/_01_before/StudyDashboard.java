@@ -15,9 +15,21 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/** 문제 3 : 긴 함수 - long function
+ *      코드를 볼때, 코드의 의미가 아니라 구현을 파악하고 있는 중이라고 느낀다면,
+ *      이는 긴 코드라고 할 수 있다.(코드의 실제 길이와 무관)
+ *
+ *      구현을 파악해야한다면, 문맥 전환이 많이 필요하겠지만,
+ *      의미를 파악해야하는 경우에는 한눈에 이를 확인 할 수 있어서
+ *      함수의 길이를 줄이고, 의미와 구현을 구분하는 것이 좋다.
+ *
+ *      함수를 실행할때, 여러번 실행시 ,서브루틴에 스택이 쌓이는 것을 걱정할 수 있는데,
+ *      최근 언어들은 컴파일 시 최적화가 이루어 지기 때문에 이런 부분까지는 고려대상이 아니다.
+ */
+
 public class StudyDashboard {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws  IOException, InterruptedException {
         StudyDashboard studyDashboard = new StudyDashboard();
         studyDashboard.print();
     }
