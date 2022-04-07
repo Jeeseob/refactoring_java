@@ -15,6 +15,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/** refactoring 7 : 임시 변수를 질의 함수로 바꾸기 - replace temp with query
+ *      query = 함수 - 임시변수를 만드는 표현식을 함수로 빼내고, 이를 파라미터로 사용한다.
+ **/
+
 public class StudyDashboard {
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -72,15 +76,24 @@ public class StudyDashboard {
             writer.print(header(totalNumberOfEvents, participants.size()));
 
             participants.forEach(p -> {
-                long count = p.homework().values().stream()
-                        .filter(v -> v == true)
-                        .count();
-                double rate = count * 100 / totalNumberOfEvents;
-
-                String markdownForHomework = String.format("| %s %s | %.2f%% |\n", p.username(), checkMark(p, totalNumberOfEvents), rate);
+                String markdownForHomework = getMarkdownForParticipant(totalNumberOfEvents, p);
                 writer.print(markdownForHomework);
             });
         }
+    }
+
+    // Query - 임시 변수를 함수로 변환해서 아래의 함수에 파라미터 형태로 넣는 것
+    private double getRate(int totalNumberOfEvents, Participant p) {
+        long count = p.homework().values().stream()
+                .filter(v -> v == true)
+                .count();
+        double rate = count * 100 / totalNumberOfEvents;
+        return rate;
+    }
+
+    // 유저 한명에 대한 row를 만드는 함수.
+    private String getMarkdownForParticipant(int totalNumberOfEvents, Participant p) {
+        return String.format("| %s %s | %.2f%% |\n", p.username(), checkMark(p, totalNumberOfEvents), getRate(totalNumberOfEvents, p));
     }
 
     /**
