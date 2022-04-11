@@ -10,12 +10,22 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/** refactoring 9 : 객체 통째로 넘기기 - preserve whole object
+ *      메소드의 파라미터가 하나의 객체에서 파생된 값인 경우,
+ *      파라미터 각각이 아니라, 객체 자체를 넘겨서 파라미터를 줄이는 방법
+ *
+ *      객체로 만들기랑 다른 점은 이미 해당하는 객체가 있는 경우에 사용할 수 있다는 점이다.
+ *          - 이때, 의존성과, 해당하는 정보가 모두 넘어가도 괜찮은지 등에 대한 고려가 필요하다.
+ *          - 해당하는 메소드의 위치가 적절한지도 확인해봐야 한다.
+ *
+ *      해당하는 메소드의 위치와, 파라미터 객체의 적절성에 대해서 고민해봐야한다.
+ *
+ **/
 public class StudyDashboard {
 
     private final int totalNumberOfEvents;
@@ -78,23 +88,16 @@ public class StudyDashboard {
             writer.print(header(participants.size()));
 
             participants.forEach(p -> {
-                String markdownForHomework = getMarkdownForParticipant(p.username(), p.homework());
+                String markdownForHomework = getMarkdownForParticipant(p);
                 writer.print(markdownForHomework);
             });
         }
     }
 
-    double getRate(Map<Integer, Boolean> homework) {
-        long count = homework.values().stream()
-                .filter(v -> v == true)
-                .count();
-        return (double) (count * 100 / this.totalNumberOfEvents);
-    }
-
-    private String getMarkdownForParticipant(String username, Map<Integer, Boolean> homework) {
-        return String.format("| %s %s | %.2f%% |\n", username,
-                checkMark(homework, this.totalNumberOfEvents),
-                getRate(homework));
+    private String getMarkdownForParticipant(Participant participant) {
+        return String.format("| %s %s | %.2f%% |\n", participant.username(),
+                checkMark(participant, this.totalNumberOfEvents),
+                participant.getRate(this.totalNumberOfEvents));
     }
 
     /**
@@ -118,10 +121,10 @@ public class StudyDashboard {
     /**
      * |:white_check_mark:|:white_check_mark:|:white_check_mark:|:x:|
      */
-    private String checkMark(Map<Integer, Boolean> homework, int totalEvents) {
+    private String checkMark(Participant participant, int totalEvents) {
         StringBuilder line = new StringBuilder();
         for (int i = 1 ; i <= totalEvents ; i++) {
-            if(homework.containsKey(i) && homework.get(i)) {
+            if(participant.homework().containsKey(i) && participant.homework().get(i)) {
                 line.append("|:white_check_mark:");
             } else {
                 line.append("|:x:");
