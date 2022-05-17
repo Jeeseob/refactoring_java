@@ -24,7 +24,6 @@ import java.util.concurrent.Executors;
  *          - 해당하는 메소드의 위치가 적절한지도 확인해봐야 한다.
  *
  *      해당하는 메소드의 위치와, 파라미터 객체의 적절성에 대해서 고민해봐야한다.
- *
  **/
 public class StudyDashboard {
 
