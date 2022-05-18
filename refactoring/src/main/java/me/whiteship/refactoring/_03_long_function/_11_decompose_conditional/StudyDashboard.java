@@ -12,6 +12,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/** refactoring 11 : 조건문 분해하기 - decompose conditional
+ *
+ *      조건 자체가 복잡해질 수 있다.
+ *      else if가 중첩되면, 해당하는 시점에 코드가가늘어난다.
+ *
+ *      동작에 이름을 주면서 의미를 부여하여 함수로 배낸다.
+ **/
+
 public class StudyDashboard {
 
     private final int totalNumberOfEvents;
@@ -62,15 +70,26 @@ public class StudyDashboard {
     }
 
     private Participant findParticipant(String username, List<Participant> participants) {
-        Participant participant;
-        if (participants.stream().noneMatch(p -> p.username().equals(username))) {
-            participant = new Participant(username);
-            participants.add(participant);
-        } else {
-            participant = participants.stream().filter(p -> p.username().equals(username)).findFirst().orElseThrow();
-        }
+        return isNewParticipant(username, participants) ?
+                createNewParticipant(username, participants) :
+                findExistingParticipant(username, participants);
+    }
 
+    private Participant findExistingParticipant(String username, List<Participant> participants) {
+        Participant participant;
+        participant = participants.stream().filter(p -> p.username().equals(username)).findFirst().orElseThrow();
         return participant;
+    }
+
+    private Participant createNewParticipant(String username, List<Participant> participants) {
+        Participant participant;
+        participant = new Participant(username);
+        participants.add(participant);
+        return participant;
+    }
+
+    private boolean isNewParticipant(String username, List<Participant> participants) {
+        return participants.stream().noneMatch(p -> p.username().equals(username));
     }
 
 }
