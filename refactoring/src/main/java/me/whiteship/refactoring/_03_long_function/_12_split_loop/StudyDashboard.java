@@ -69,7 +69,6 @@ public class StudyDashboard {
 
         latch.await();
         service.shutdown();
-
         new StudyPrinter(this.totalNumberOfEvents, this.participants).execute();
         printFirstParticipants();
     }
